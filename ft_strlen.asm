@@ -1,3 +1,4 @@
+%include "compiler_macros.inc"
 section .text
 
 global FT_STRLEN
