@@ -3,6 +3,7 @@
 ################################################################################
 
 NAME := libasm.a
+TEST_NAME := libasm_test
 .DEFAULT_GOAL := all
 CC := cc
 AR := ar
@@ -27,11 +28,13 @@ BUILD_DIR := build
 LIB_DIR := lib
 BIN_DIR := bin
 INC_DIRS := .
+TEST_DIR := test
 SRC_DIRS := .
 
 # Tell the Makefile where headers and source files are
 vpath %.h $(INC_DIRS)
-vpath %.c $(SRC_DIRS)
+vpath %.hpp $(TEST_DIR)
+vpath %.asm $(SRC_DIRS)
 
 ################################################################################
 ###############                      FILES                        ##############
@@ -42,7 +45,14 @@ OBJS := $(addprefix $(BUILD_DIR)/, $(SRCS:%.asm=%.o))
 INC := compiler_macros.inc os_syscalls.inc
 TEST_HEADER :=
 
-LIBASM := $(addprefix $(LIB_DIR), $(NAME))
+LIBASM := $(addprefix $(LIB_DIR)/, $(NAME))
+
+################################################################################
+###############                     TEST                          ##############
+################################################################################
+
+TEST_SRCS := $(wildcard $(TEST_DIR)/*.cpp)
+TEST_OBJS := $(TEST_SRCS:%.cpp=%.o)
 
 ################################################################################
 ########                           FLAGS                        ################
@@ -51,7 +61,8 @@ LIBASM := $(addprefix $(LIB_DIR), $(NAME))
 CFLAGS ?= -Wextra -Wall -Werror -g -MMD -MP $(addprefix -I, $(INC_DIRS))
 ARFLAGS ?= -rcs
 ASFLAGS ?= -Wall $(addprefix -iinc, $(INC_DIRS))
-LDFLAGS ?= 
+LDFLAGS ?= $(addprefix -L, $(LIB_DIR))
+LDLIBS ?= -lasm
 
 ifeq ($(DEBUG),)
 	CFLAGS += -g
@@ -92,9 +103,9 @@ endif
 ########                         COMPILING                      ################
 ################################################################################
 
-all: $(LIB_DIR)/$(NAME)
+all: $(LIBASM)
 
-$(LIB_DIR)/$(NAME): $(OBJS) | $(LIB_DIR)
+$(LIBASM): $(OBJS) | $(LIB_DIR)
 	@$(LOG) "Linking object files to $@"
 	@$(AR) $(ARFLAGS) $@ $^
 
@@ -125,6 +136,8 @@ fclean: clean
 	fi
 
 re: fclean all
+
+$(TEST_NAME): $(LIBASM) $(TEST_OBJS)
 
 -include $(OBJS:%.o=%.d)
 
