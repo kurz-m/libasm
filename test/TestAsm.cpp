@@ -21,7 +21,7 @@ bool TestAsm::test_strlen()
 
 #ifdef __verbose__
 
-  std::cout << "Testing a basic string on the heap\n";
+  std::cout << "Testing a basic string on the stack\n";
 
 #endif
 
