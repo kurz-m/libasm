@@ -54,6 +54,36 @@ void TestAsm::test_strlen()
     std::cerr << RED << "Could not open file for testing\n" << RESET;
   }
 
+#ifdef __verbose__
+  print_test_case(3, "String on the heap");
+#endif
+
+  std::string* ptr = new std::string("Classic Hello, World!");
+
+  own = ft_strlen(ptr->c_str());
+  ref = ptr->length();
+  check.push_back(IS_EQUAL(own, ref));
+  print_test_result(IS_EQUAL(own, ref));
+
+  delete ptr;
+
+#ifdef __verbose__
+  print_test_case(4, "String literal");
+#endif
+
+  own = ft_strlen("Hello, World!");
+  ref = std::strlen("Hello, World!");
+  check.push_back(IS_EQUAL(own, ref));
+  print_test_result(IS_EQUAL(own, ref));
+
+#ifdef __verbose__
+  print_test_case(5, "Empty string");
+#endif
+
+  own = ft_strlen("");
+  ref = std::strlen("");
+  check.push_back(IS_EQUAL(own, ref));
+  print_test_result(IS_EQUAL(own, ref));
 
   // Counting successful tests
   int trues = std::count(check.begin(), check.end(), true);
