@@ -20,9 +20,7 @@ bool TestAsm::test_strlen()
   std::string basic_stack("Just here for checking something");
 
 #ifdef __verbose__
-
   std::cout << "Testing a basic string on the stack\n";
-
 #endif
 
   own = ft_strlen(basic_stack.c_str());
