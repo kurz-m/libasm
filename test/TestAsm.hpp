@@ -9,10 +9,13 @@ public:
   TestAsm();
   ~TestAsm();
 
-  bool test_strlen();
+  void test_strlen();
 
 private:
   std::vector<bool> tests_;
+  static void print_test_header(const std::string&);
+  static void print_test_case(int, const std::string&);
+  static void print_result(int, int);
 };
 
 #endif
