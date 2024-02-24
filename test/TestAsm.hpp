@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <sys/types.h>
+#include <string>
 
 class TestAsm {
 public:

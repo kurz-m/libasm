@@ -2,12 +2,10 @@
 ###############                GENERAL SETTINGS                   ##############
 ################################################################################
 
-NAME := libasm.a
+NAME := libasm_test
 .DEFAULT_GOAL := all
-AR := ar
-AS := nasm
+CXX := c++
 RM := rm -rf
-OS := $(shell uname -s)
 
 ################################################################################
 ###############                 PRINT OPTIONS                     ##############
@@ -23,82 +21,52 @@ LOG := printf "[$(BO)$(G)ⓘ INFO$(X)] %s\n"
 ################################################################################
 
 BUILD_DIR := build
-LIB_DIR := lib
+LIB_DIR := ../lib
 BIN_DIR := bin
-INC_DIRS := .
+INC_DIRS := . ..
 SRC_DIRS := .
 
 # Tell the Makefile where headers and source files are
 vpath %.h $(INC_DIRS)
-vpath %.asm $(SRC_DIRS)
+vpath %.hpp $(TEST_DIR)
 
 ################################################################################
 ###############                      FILES                        ##############
 ################################################################################
 
-SRCS := ft_strlen.asm
-OBJS := $(addprefix $(BUILD_DIR)/, $(SRCS:%.asm=%.o))
-INC := compiler_macros.inc os_syscalls.inc
-
-LIBASM := $(addprefix $(LIB_DIR)/, $(NAME))
+SRCS := $(wildcard *.cpp)
+OBJS := $(addprefix $(BUILD_DIR)/, $(SRCS:%.cpp=%.o))
 
 ################################################################################
 ########                           FLAGS                        ################
 ################################################################################
 
-ARFLAGS ?= -rcs
-ASFLAGS ?= -Wall $(addprefix -iinc, $(INC_DIRS))
+CXXFLAGS ?= -c -Wextra -Wall -Werror -MMD -MP $(addprefix -I, $(INC_DIRS))
 LDFLAGS ?= $(addprefix -L, $(LIB_DIR))
 LDLIBS ?= -lasm
 
 ifeq ($(DEBUG),)
-	ASFLAGS += -g
-endif
-
-################################################################################
-########                        OS specific                     ################
-################################################################################
-
-ifeq ($(OS), Linux)
-	ASFLAGS += -f elf64 -d__linux__
-else ifeq ($(OS), Darwin)
-	ASFLAGS += -f macho64 -d__APPLE__
+	CFLAGS += -g
 else
-	$(error Unsupported operating system: $(OS). Works only under Linux/MacOS)
+	CFLAGS += -O2
 endif
-
-CC_TYPE := $(shell cc --version 2>/dev/null | grep -o -E '(Ubuntu|Debian)')
-
-ifeq ($(CC_TYPE),)
-	CC_TYPE := $(shell cc --version 2>/dev/null | grep -o -E '(gcc|clang)')
-	ifeq ($(CC_TYPE), gcc)
-		ASFLAGS += -d__GNUC__
-	else ifeq ($(CC_TYPE), clang)
-		ASFLAGS += -d__clang__
-	else
-		$(error Unsupported compiler: $(CC_TYPE).)
-	endif
-else
-	ASFLAGS += -d__GNUC__
-endif
-
 
 ################################################################################
 ########                         COMPILING                      ################
 ################################################################################
 
-all: $(LIBASM)
+all: $(NAME)
 
-$(LIBASM): $(OBJS) | $(LIB_DIR)
+$(NAME): $(LIB_DIR)/libasm.a $(OBJS)
 	@$(LOG) "Linking object files to $@"
-	@$(AR) $(ARFLAGS) $@ $^
+	@$(CXX) $^ $(LDFLAGS) $(LDLIBS) -o $@
 
-$(LIB_DIR):
-	@mkdir -p $@
+$(LIB_DIR)/libasm.a:
+	$(MAKE) -C .. all
 
-$(BUILD_DIR)/%.o: %.asm $(INC) | $(BUILD_DIR)
+$(BUILD_DIR)/%.o: %.cpp | $(BUILD_DIR)
 	@$(LOG) "Compiling $(notdir $@)"
-	@$(AS) $(ASFLAGS) $< -o $@
+	@$(CXX) $(CXXFLAGS) $< -o $@
 
 $(BUILD_DIR):
 	@mkdir -p $@
@@ -112,11 +80,11 @@ clean:
 	fi
 
 fclean: clean
-	@if [ -d "$(LIB_DIR)" ]; then \
+	@if [ -f "$(NAME)" ]; then \
 		$(LOG) "Cleaning $(notdir $(NAME))"; \
-		$(RM) $(LIB_DIR); \
+		$(RM) $(NAME); \
 	else \
-		$(LOG) "No library to clean."; \
+		$(LOG) "No executable to clean."; \
 	fi
 
 re: fclean all
