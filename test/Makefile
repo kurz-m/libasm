@@ -55,14 +55,14 @@ endif
 ########                         COMPILING                      ################
 ################################################################################
 
-all: $(NAME)
+all: libasm $(NAME)
 
-$(NAME): $(LIB_DIR)/libasm.a $(OBJS)
+$(NAME): $(OBJS)
 	@$(LOG) "Linking object files to $@"
 	@$(CXX) $^ $(LDFLAGS) $(LDLIBS) -o $@
 
-$(LIB_DIR)/libasm.a:
-	$(MAKE) -C .. -B
+libasm:
+	@$(MAKE) -C ..
 
 $(BUILD_DIR)/%.o: %.cpp | $(BUILD_DIR)
 	@$(LOG) "Compiling $(notdir $@)"
@@ -72,6 +72,7 @@ $(BUILD_DIR):
 	@mkdir -p $@
 
 clean:
+	@$(MAKE) -C .. clean
 	@if [ -d "$(BUILD_DIR)" ]; then \
 		$(LOG) "Cleaning $(notdir $(BUILD_DIR))"; \
 		$(RM) $(BUILD_DIR); \
@@ -80,6 +81,7 @@ clean:
 	fi
 
 fclean: clean
+	@$(MAKE) -C .. fclean
 	@if [ -f "$(NAME)" ]; then \
 		$(LOG) "Cleaning $(notdir $(NAME))"; \
 		$(RM) $(NAME); \
@@ -91,4 +93,4 @@ re: fclean all
 
 -include $(OBJS:%.o=%.d)
 
-.PHONY: all fclean clean re
+.PHONY: all fclean clean re libasm
