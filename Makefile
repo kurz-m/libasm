@@ -36,7 +36,7 @@ vpath %.asm $(SRC_DIRS)
 ###############                      FILES                        ##############
 ################################################################################
 
-SRCS := ft_strlen.asm
+SRCS := ft_strlen.asm ft_strcpy.asm
 OBJS := $(addprefix $(BUILD_DIR)/, $(SRCS:%.asm=%.o))
 INC := compiler_macros.inc os_syscalls.inc
 

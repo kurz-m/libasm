@@ -90,6 +90,8 @@ void TestAsm::test_strlen()
   print_result(trues, check.size());
 }
 
+
+
 void TestAsm::print_setup()
 {
   std::cout << BOLD << MAGENTA << "\n" << std::left << std::setw(40)

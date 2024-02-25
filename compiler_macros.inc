@@ -4,11 +4,13 @@
 ; macros for gcc compiler
 %ifdef __GNUC__
     %define FT_STRLEN   ft_strlen
+    %define FT_STRCPY   ft_strcpy
     %define MALLOC      malloc
 
 ; macros for clang compiler
 %elif __clang__
     %define FT_STRLEN   _ft_strlen
+    %define FT_STRCPY   _ft_strcpy
     %define MALLOC      _malloc
 
 ; throw error

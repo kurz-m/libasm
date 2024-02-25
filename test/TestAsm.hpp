@@ -11,6 +11,7 @@ public:
   ~TestAsm();
 
   void test_strlen();
+  void test_strcpy();
   static void print_setup();
 
 private:

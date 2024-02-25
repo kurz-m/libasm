@@ -62,7 +62,7 @@ $(NAME): $(LIB_DIR)/libasm.a $(OBJS)
 	@$(CXX) $^ $(LDFLAGS) $(LDLIBS) -o $@
 
 $(LIB_DIR)/libasm.a:
-	$(MAKE) -C .. all
+	$(MAKE) -C .. -B
 
 $(BUILD_DIR)/%.o: %.cpp | $(BUILD_DIR)
 	@$(LOG) "Compiling $(notdir $@)"
