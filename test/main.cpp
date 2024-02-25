@@ -8,6 +8,7 @@ int main()
   TestAsm test_class;
 
   test_class.test_strlen();
+  test_class.test_strcpy();
   return EXIT_SUCCESS;
 }
 

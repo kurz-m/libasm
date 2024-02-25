@@ -9,8 +9,12 @@
 #include "libasm.h"
 #include "colors.h"
 
+/*****************************************************************************/
+// MACROS
 #define IS_EQUAL(a, b) (a == b)
-
+#define EQUAL_STR(a, b) (std::strcmp(a, b) == 0 ? true : false)
+#define RESET_BUF(str) (std::memset(str, 0, std::strlen(str)))
+/*****************************************************************************/
 TestAsm::TestAsm() : tests_() {}
 
 TestAsm::~TestAsm() {}
@@ -90,7 +94,87 @@ void TestAsm::test_strlen()
   print_result(trues, check.size());
 }
 
+void TestAsm::test_strcpy()
+{
+  print_test_header("FT_STRCPY");
+  std::vector<bool> check;
 
+  const char* test1_string = "Hello World!";
+  
+  char* own = new char[std::strlen(test1_string) + 1];
+  char* ref = new char[std::strlen(test1_string) + 1];
+
+#ifdef __verbose__
+  print_test_case(1, "String literal in read-only memory");
+#endif
+
+  ft_strcpy(own, test1_string);
+  std::strcpy(ref, test1_string);
+  check.push_back(EQUAL_STR(own, ref));
+  print_test_result(EQUAL_STR(own, ref));
+  RESET_BUF(own);
+  RESET_BUF(ref);
+
+#ifdef __verbose__
+  print_test_case(2, "Mutable char array");
+#endif
+
+  const char test2_string[] = "Hello World!";
+
+  ft_strcpy(own, test2_string);
+  std::strcpy(ref, test2_string);
+  check.push_back(EQUAL_STR(own, ref));
+  print_test_result(EQUAL_STR(own, ref));
+
+//   std::ifstream file("dummy_file.txt");
+
+//   if (file.is_open()) {
+//     std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+//     own = ft_strlen(content.c_str());
+//     ref = content.length();
+//     check.push_back(IS_EQUAL(own, ref));
+//     print_test_result(IS_EQUAL(own, ref));
+//     file.close();
+//   }
+//   else {
+//     std::cerr << RED << "Could not open file for testing\n" << RESET;
+//   }
+
+// #ifdef __verbose__
+//   print_test_case(3, "String on the heap");
+// #endif
+
+//   std::string* ptr = new std::string("Classic Hello, World!");
+
+//   own = ft_strlen(ptr->c_str());
+//   ref = ptr->length();
+//   check.push_back(IS_EQUAL(own, ref));
+//   print_test_result(IS_EQUAL(own, ref));
+
+//   delete ptr;
+
+// #ifdef __verbose__
+//   print_test_case(4, "String literal");
+// #endif
+
+//   own = ft_strlen("Hello, World!");
+//   ref = std::strlen("Hello, World!");
+//   check.push_back(IS_EQUAL(own, ref));
+//   print_test_result(IS_EQUAL(own, ref));
+
+// #ifdef __verbose__
+//   print_test_case(5, "Empty string");
+// #endif
+
+//   own = ft_strlen("");
+//   ref = std::strlen("");
+//   check.push_back(IS_EQUAL(own, ref));
+//   print_test_result(IS_EQUAL(own, ref));
+
+  // Counting successful tests
+  int trues = std::count(check.begin(), check.end(), true);
+  print_result(trues, check.size());
+}
 
 void TestAsm::print_setup()
 {
