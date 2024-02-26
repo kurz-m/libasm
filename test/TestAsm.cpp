@@ -99,14 +99,13 @@ void TestAsm::test_strcpy()
   print_test_header("FT_STRCPY");
   std::vector<bool> check;
 
-  const char* test1_string = "Hello World!";
-  
-  char* own = new char[std::strlen(test1_string) + 1];
-  char* ref = new char[std::strlen(test1_string) + 1];
-
 #ifdef __verbose__
   print_test_case(1, "String literal in read-only memory");
 #endif
+
+  const char* test1_string = "Hello World!";
+  char* own = new char[std::strlen(test1_string) + 1]();
+  char* ref = new char[std::strlen(test1_string) + 1]();
 
   ft_strcpy(own, test1_string);
   std::strcpy(ref, test1_string);
@@ -126,50 +125,72 @@ void TestAsm::test_strcpy()
   check.push_back(EQUAL_STR(own, ref));
   print_test_result(EQUAL_STR(own, ref));
 
-//   std::ifstream file("dummy_file.txt");
+  delete [] own;
+  delete [] ref;
 
-//   if (file.is_open()) {
-//     std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-//     own = ft_strlen(content.c_str());
-//     ref = content.length();
-//     check.push_back(IS_EQUAL(own, ref));
-//     print_test_result(IS_EQUAL(own, ref));
-//     file.close();
-//   }
-//   else {
-//     std::cerr << RED << "Could not open file for testing\n" << RESET;
-//   }
+#ifdef __verbose__
+  print_test_case(3, "String read from a file");
+#endif
 
-// #ifdef __verbose__
-//   print_test_case(3, "String on the heap");
-// #endif
+  std::ifstream file("dummy_file.txt");
 
-//   std::string* ptr = new std::string("Classic Hello, World!");
+  if (file.is_open()) {
+    std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+    own = new char[std::strlen(content.c_str()) + 1]();
+    ref = new char[std::strlen(content.c_str()) + 1]();
 
-//   own = ft_strlen(ptr->c_str());
-//   ref = ptr->length();
-//   check.push_back(IS_EQUAL(own, ref));
-//   print_test_result(IS_EQUAL(own, ref));
+    ft_strcpy(own, content.c_str());
+    std::strcpy(ref, content.c_str());
+    check.push_back(EQUAL_STR(own, ref));
+    print_test_result(EQUAL_STR(own, ref));
+    RESET_BUF(own);
+    RESET_BUF(ref);
+    delete [] own;
+    delete [] ref;
+    file.close();
+  }
+  else {
+    std::cerr << RED << "Could not open file for testing\n" << RESET;
+  }
 
-//   delete ptr;
+#ifdef __verbose__
+  print_test_case(4, "Empty string");
+#endif
 
-// #ifdef __verbose__
-//   print_test_case(4, "String literal");
-// #endif
+  own = new char[std::strlen("") + 1]();
+  ref = new char[std::strlen("") + 1]();
 
-//   own = ft_strlen("Hello, World!");
-//   ref = std::strlen("Hello, World!");
-//   check.push_back(IS_EQUAL(own, ref));
-//   print_test_result(IS_EQUAL(own, ref));
+  ft_strcpy(own, "");
+  std::strcpy(ref, "");
+  check.push_back(EQUAL_STR(own, ref));
+  print_test_result(EQUAL_STR(own, ref));
+  RESET_BUF(own);
+  RESET_BUF(ref);
+  delete [] own;
+  delete [] ref;
 
-// #ifdef __verbose__
-//   print_test_case(5, "Empty string");
-// #endif
+#ifdef __verbose__
+  print_test_case(5, "String on the heap");
+#endif
 
-//   own = ft_strlen("");
-//   ref = std::strlen("");
-//   check.push_back(IS_EQUAL(own, ref));
-//   print_test_result(IS_EQUAL(own, ref));
+  const char copy_str[] = "This is a string on the heap";
+
+  char* copy = new char[std::strlen(copy_str) + 1]();
+  for (size_t i = 0; i < std::strlen(copy_str); ++i) {
+    copy[i] = copy_str[i];
+  }
+  own = new char[std::strlen(copy_str) + 1]();
+  ref = new char[std::strlen(copy_str) + 1]();
+
+  ft_strcpy(own, copy);
+  std::strcpy(ref, copy);
+  check.push_back(EQUAL_STR(own, ref));
+  print_test_result(EQUAL_STR(own, ref));
+  RESET_BUF(own);
+  RESET_BUF(ref);
+  delete [] own;
+  delete [] ref;
+  delete [] copy;
 
   // Counting successful tests
   int trues = std::count(check.begin(), check.end(), true);
@@ -230,5 +251,5 @@ inline void TestAsm::print_test_result(bool result)
 inline void TestAsm::print_result(int trues, int total)
 {
   std::cout << GREEN << "RESULT: " << trues << "/" << total
-            << " tests were successful.\n" << RESET;
+            << " tests were successful." << RESET << std::endl;
 }
