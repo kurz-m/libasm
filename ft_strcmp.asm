@@ -14,18 +14,18 @@ section .text
 global FT_STRCMP
 
 FT_STRCMP:
-    xor r8, r8
+    xor rcx, rcx ; size_t i = 0
     
     .loop:
-        movzx al, BYTE [rdi + r8]
-        movzx dl, BYTE [rsi + r8]
-        cmp al, dl
-        jne .end_strcmp
-        test al, al
-        jz .end_strcmp
-        inc r8
-        je .loop
+        movzx rax, BYTE [rdi + rcx] ; char c1 = *(s1 + i) + zero-extension
+        movzx rdx, BYTE [rsi + rcx] ; char c2 = *(s2 + i) + zero-extension
+        cmp al, dl ; compare chars for early return
+        jne .end_strcmp ; jump to end if c1 != c2
+        test al, al ; check for null-termination
+        jz .end_strcmp ; jump to end if c1 == '\0'
+        inc rcx ; increase counter -> ++i
+        je .loop ; jump back to loop
     
     .end_strcmp:
-        sub rax, rdx
-        ret
+        sub rax, rdx ; subtract c2 value from c1 value
+        ret ; return the calculated value
