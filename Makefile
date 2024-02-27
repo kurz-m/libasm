@@ -22,7 +22,7 @@ LOG := printf "[$(BO)$(G)ⓘ INFO$(X)] %s\n"
 ###############                  DIRECTORIES                      ##############
 ################################################################################
 
-BUILD_DIR := build
+BUILD_DIR := obj-cache
 LIB_DIR := lib
 BIN_DIR := bin
 INC_DIRS := .
