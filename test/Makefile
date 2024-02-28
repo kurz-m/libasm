@@ -46,9 +46,9 @@ LDFLAGS ?= $(addprefix -L, $(LIB_DIR))
 LDLIBS ?= -lasm
 
 ifeq ($(DEBUG),)
-	CFLAGS += -g
+	CXXFLAGS += -g
 else
-	CFLAGS += -O2
+	CFXXLAGS += -O2
 endif
 
 ################################################################################

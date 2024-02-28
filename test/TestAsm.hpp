@@ -12,6 +12,7 @@ public:
 
   void test_strlen();
   void test_strcpy();
+  void test_strcmp();
   static void print_setup();
 
 private:

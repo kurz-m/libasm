@@ -5,12 +5,14 @@
 %ifdef __GNUC__
     %define FT_STRLEN   ft_strlen
     %define FT_STRCPY   ft_strcpy
+    %define FT_STRCMP   ft_strcmp
     %define MALLOC      malloc
 
 ; macros for clang compiler
 %elif __clang__
     %define FT_STRLEN   _ft_strlen
     %define FT_STRCPY   _ft_strcpy
+    %define FT_STRCMP   _ft_strcmp
     %define MALLOC      _malloc
 
 ; throw error
