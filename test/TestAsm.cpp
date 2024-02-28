@@ -10,8 +10,23 @@
 #include "colors.h"
 
 /*****************************************************************************/
-// MACROS
+// MACROS and inline functions
+template<typename T>
+static inline bool is_equal(T& a, T& b) {
+  return a == b;
+}
+
+template<typename T>
+static inline bool same_sign(T& a, T& b) {
+  return (a >> 7) == (b >> 7);
+}
+
+static inline bool equal_string(const char* a, const char* b) {
+  return std::strcmp(a, b) == 0 ? true : false;
+}
+
 #define IS_EQUAL(a, b) (a == b)
+#define SAME_SIGN(a, b) ((a >> 7) == (b >> 7))
 #define EQUAL_STR(a, b) (std::strcmp(a, b) == 0 ? true : false)
 #define RESET_BUF(str) (std::memset(str, 0, std::strlen(str)))
 /*****************************************************************************/
@@ -190,6 +205,110 @@ void TestAsm::test_strcpy()
   RESET_BUF(ref);
   delete [] own;
   delete [] ref;
+  delete [] copy;
+
+  // Counting successful tests
+  int trues = std::count(check.begin(), check.end(), true);
+  print_result(trues, check.size());
+}
+
+void TestAsm::test_strcmp()
+{
+  print_test_header("FT_STRCMP");
+  std::vector<bool> check;
+
+#ifdef __verbose__
+  print_test_case(1, "Same string literal");
+#endif
+
+  const char* test1_string = "Hello World!";
+  const char* test2_string = "Hello World!";
+  int own = 0;
+  int ref = 0;
+
+  own = ft_strcmp(test1_string, test2_string);
+  ref = std::strcmp(test1_string, test2_string);
+  check.push_back(IS_EQUAL(own, ref));
+  print_test_result(IS_EQUAL(own, ref));
+
+#ifdef __verbose__
+  print_test_case(2, "Same mutable char array");
+#endif
+
+  const char mut1[] = "Hello World!";
+  const char mut2[] = "Hello World!";
+
+  own = ft_strcmp(mut1, mut2);
+  ref = std::strcmp(mut1, mut2);
+  check.push_back(IS_EQUAL(own, ref));
+  print_test_result(IS_EQUAL(own, ref));
+
+#ifdef __verbose__
+  print_test_case(3, "One empty string");
+#endif
+
+  const char empty[] = "";
+
+  own = ft_strcmp(mut1, empty);
+  ref = std::strcmp(mut1, empty);
+  check.push_back(same_sign(own, ref));
+  print_test_result(same_sign(own, ref));
+
+#ifdef __verbose__
+  print_test_case(4, "Two empty strings");
+#endif
+
+  own = ft_strcmp("", empty);
+  ref = std::strcmp("", empty);
+  check.push_back(IS_EQUAL(own, ref));
+  print_test_result(IS_EQUAL(own, ref));
+
+#ifdef __verbose__
+  print_test_case(5, "String read from a file");
+#endif
+
+  std::ifstream file("dummy_file.txt");
+
+  if (file.is_open()) {
+    std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+    
+    std::string file1 = content.substr(0, 25);
+    std::string file2 = content.substr(10, 22);
+
+    own = strcmp(file1.c_str(), file2.c_str());
+    ref = std::strcmp(file1.c_str(), file2.c_str());
+    check.push_back(same_sign(own, ref));
+    print_test_result(same_sign(own, ref));
+    file.close();
+  }
+  else {
+    std::cerr << RED << "Could not open file for testing\n" << RESET;
+  }
+
+#ifdef __verbose__
+  print_test_case(6, "Negative return value");
+#endif
+
+  own = ft_strcmp("z", "A");
+  ref = std::strcmp("z", "A");
+  check.push_back(same_sign(own, ref));
+  print_test_result(same_sign(own, ref));
+
+#ifdef __verbose__
+  print_test_case(7, "String on the heap");
+#endif
+
+  const char copy_str[] = "This is a string on the heap";
+
+  char* copy = new char[std::strlen(copy_str) + 1]();
+  for (size_t i = 0; i < std::strlen(copy_str); ++i) {
+    copy[i] = copy_str[i];
+  }
+
+  own = ft_strcmp(copy_str, copy_str);
+  ref = std::strcmp(copy_str, copy_str);
+  check.push_back(is_equal(own, ref));
+  print_test_result(is_equal(own, ref));
   delete [] copy;
 
   // Counting successful tests
