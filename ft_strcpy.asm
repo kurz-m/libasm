@@ -15,12 +15,12 @@ global FT_STRCPY
 FT_STRCPY:
     xor rdx, rdx ; size_t i = 0
     mov rax, rdi ; copy pointer for later return
-    cmp BYTE [rsi], 0 ; *(s) == '\0'
-    je .end_strcpy ; if equal, jump to return statement
-    mov cl, BYTE [rsi + rdx]
+    test sil, sil ; *(s) == '\0'
+    jz .end_strcpy ; if '\0', jump to return statement
+    mov cl, BYTE [rsi + rdx] ; copy *(src + rdx) to lower byte of rcx
 
 .loop:
-    mov [rdi + rdx], cl ; copy char to *(dest + rdx)
+    mov BYTE [rdi + rdx], cl ; copy char to *(dest + rdx)
     inc rdx ; increase rdx by 1 (++rdx)
     mov cl, BYTE [rsi + rdx] ; copy *(src + rdx) to lower byte of rcx
     test cl, cl ; check of null-termination: char & char
