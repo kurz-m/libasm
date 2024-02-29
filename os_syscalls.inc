@@ -3,15 +3,13 @@
 
 ; syscall macros for Linux
 %ifdef __linux__
-    %define SYS_EXIT    1
-    %define SYS_WRITE   4
     %define SYS_READ    0
+    %define SYS_WRITE   1
 
 ; syscall macros for macOS
 %elif __APPLE__
-    %define SYS_EXIT    0x2000001
-    %define SYS_WRITE   0x2000004
     %define SYS_READ    0x2000003
+    %define SYS_WRITE   0x2000004
 
 %else
     %error "Unsupported operating system"
