@@ -9,7 +9,7 @@
     %define MALLOC      malloc
 
 ; macros for clang compiler
-%elif __clang__
+%elifdef __clang__
     %define FT_STRLEN   _ft_strlen
     %define FT_STRCPY   _ft_strcpy
     %define FT_STRCMP   _ft_strcmp

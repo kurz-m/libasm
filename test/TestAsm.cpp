@@ -21,9 +21,9 @@ static inline bool same_sign(T& a, T& b) {
   return (a >> 7) == (b >> 7);
 }
 
-static inline bool equal_string(const char* a, const char* b) {
-  return std::strcmp(a, b) == 0 ? true : false;
-}
+// static inline bool equal_string(const char* a, const char* b) {
+//   return std::strcmp(a, b) == 0 ? true : false;
+// }
 
 #define IS_EQUAL(a, b) (a == b)
 #define SAME_SIGN(a, b) ((a >> 7) == (b >> 7))

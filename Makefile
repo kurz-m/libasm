@@ -70,7 +70,7 @@ endif
 CC_TYPE := $(shell cc --version 2>/dev/null | grep -o -E '(Ubuntu|Debian)')
 
 ifeq ($(CC_TYPE),)
-	CC_TYPE := $(shell cc --version 2>/dev/null | grep -o -E '(gcc|clang)')
+	CC_TYPE := $(shell cc --version 2>/dev/null | grep -o -m 1 -E '(gcc|clang)' | head -n 1)
 	ifeq ($(CC_TYPE), gcc)
 		ASFLAGS += -d__GNUC__
 	else ifeq ($(CC_TYPE), clang)
