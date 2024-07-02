@@ -15,7 +15,7 @@ global FT_STRCMP
 
 FT_STRCMP:
     xor rcx, rcx ; size_t i = 0
-    
+
     .loop:
         movzx rax, BYTE [rdi + rcx] ; char c1 = *(s1 + i) + zero-extension
         movzx rdx, BYTE [rsi + rcx] ; char c2 = *(s2 + i) + zero-extension
@@ -25,7 +25,7 @@ FT_STRCMP:
         jz .end_strcmp ; jump to end if c1 == '\0'
         inc rcx ; increase counter -> ++i
         je .loop ; jump back to loop
-    
+
     .end_strcmp:
         sub rax, rdx ; subtract c2 value from c1 value
         ret ; return the calculated value

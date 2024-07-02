@@ -30,14 +30,14 @@ SRC_DIRS := .
 
 # Tell the Makefile where headers and source files are
 vpath %.h $(INC_DIRS)
-vpath %.asm $(SRC_DIRS)
+vpath %.s $(SRC_DIRS)
 
 ################################################################################
 ###############                      FILES                        ##############
 ################################################################################
 
-SRCS := ft_strlen.asm ft_strcpy.asm ft_strcmp.asm
-OBJS := $(addprefix $(BUILD_DIR)/, $(SRCS:%.asm=%.o))
+SRCS := ft_strlen.s ft_strcpy.s ft_strcmp.s
+OBJS := $(addprefix $(BUILD_DIR)/, $(SRCS:%.s=%.o))
 INC := compiler_macros.inc os_syscalls.inc
 
 LIBASM := $(addprefix $(LIB_DIR)/, $(NAME))
@@ -96,7 +96,7 @@ $(LIBASM): $(OBJS) | $(LIB_DIR)
 $(LIB_DIR):
 	@mkdir -p $@
 
-$(BUILD_DIR)/%.o: %.asm $(INC) | $(BUILD_DIR)
+$(BUILD_DIR)/%.o: %.s $(INC) | $(BUILD_DIR)
 	@$(LOG) "Compiling $(notdir $@)"
 	@$(AS) $(ASFLAGS) $< -o $@
 
