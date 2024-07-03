@@ -45,7 +45,7 @@ CXXFLAGS ?= -c -Wextra -Wall -Werror -MMD -MP $(addprefix -I, $(INC_DIRS))
 LDFLAGS ?= $(addprefix -L, $(LIB_DIR))
 LDLIBS ?= -lasm
 
-ifeq ($(DEBUG),)
+ifeq ($(DEBUG), 1)
 	CXXFLAGS += -g
 else
 	CFXXLAGS += -O2

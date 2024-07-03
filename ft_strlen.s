@@ -4,7 +4,7 @@ section .text
 ; Function declaration:
 ;   size_t strlen(const char* s);
 ; Input arguments:
-;   rdi == const char* s)
+;   rdi == const char* s
 ; Return:
 ;   returns length of a string
 
