@@ -48,40 +48,13 @@ LIBASM := $(addprefix $(LIB_DIR)/, $(NAME))
 
 ARFLAGS ?= -rcs
 ASFLAGS ?= -Wall $(addprefix -iinc, $(INC_DIRS))
+ASFLAGS += -f elf64 -d__linux__ -d__GNUC__
 LDFLAGS ?= $(addprefix -L, $(LIB_DIR))
 LDLIBS ?= -lasm
 
 ifeq ($(DEBUG),)
 	ASFLAGS += -g
 endif
-
-################################################################################
-########                        OS specific                     ################
-################################################################################
-
-ifeq ($(OS), Linux)
-	ASFLAGS += -f elf64 -d__linux__
-else ifeq ($(OS), Darwin)
-	ASFLAGS += -f macho64 -d__APPLE__
-else
-	$(error Unsupported operating system: $(OS). Works only under Linux/MacOS)
-endif
-
-CC_TYPE := $(shell cc --version 2>/dev/null | grep -o -E '(Ubuntu|Debian)')
-
-ifeq ($(CC_TYPE),)
-	CC_TYPE := $(shell cc --version 2>/dev/null | grep -o -m 1 -E '(gcc|clang)' | head -n 1)
-	ifeq ($(CC_TYPE), gcc)
-		ASFLAGS += -d__GNUC__
-	else ifeq ($(CC_TYPE), clang)
-		ASFLAGS += -d__clang__
-	else
-		$(error Unsupported compiler: $(CC_TYPE).)
-	endif
-else
-	ASFLAGS += -d__GNUC__
-endif
-
 
 ################################################################################
 ########                         COMPILING                      ################
