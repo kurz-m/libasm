@@ -1,23 +1,19 @@
-#include <iostream>
 #include <algorithm>
-#include <fstream>
-#include <iomanip>
 #include <cstdlib>
 #include <cstring>
+#include <fstream>
+#include <iomanip>
+#include <iostream>
 
 #include "TestAsm.hpp"
-#include "libasm.h"
 #include "colors.h"
+#include "libasm.h"
 
 /*****************************************************************************/
 // MACROS and inline functions
-template<typename T>
-static inline bool is_equal(T& a, T& b) {
-  return a == b;
-}
+template <typename T> static inline bool is_equal(T &a, T &b) { return a == b; }
 
-template<typename T>
-static inline bool same_sign(T& a, T& b) {
+template <typename T> static inline bool same_sign(T &a, T &b) {
   return (a >> 7) == (b >> 7);
 }
 
@@ -30,21 +26,27 @@ static inline bool same_sign(T& a, T& b) {
 #define EQUAL_STR(a, b) (std::strcmp(a, b) == 0 ? true : false)
 #define RESET_BUF(str) (std::memset(str, 0, std::strlen(str)))
 /*****************************************************************************/
+
 TestAsm::TestAsm() : tests_() {}
 
 TestAsm::~TestAsm() {}
 
 #define __verbose__
 
-void TestAsm::test_strlen()
-{
+/**
+ * Function for testing ft_strlen.
+ *
+ * This function tests different cases for the ft_strlen function
+ * written in x86 assembly.
+ */
+void TestAsm::test_strlen() {
   print_test_header("FT_STRLEN");
 
   size_t own = 0;
   size_t ref = 0;
   std::vector<bool> check;
 
-  const char* basic_stack = "Testing a basic string on the stack";
+  const char *basic_stack = "Testing a basic string on the stack";
 
 #ifdef __verbose__
   print_test_case(1, "String on the stack");
@@ -62,14 +64,14 @@ void TestAsm::test_strlen()
   std::ifstream file("dummy_file.txt");
 
   if (file.is_open()) {
-    std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+    std::string content((std::istreambuf_iterator<char>(file)),
+                        std::istreambuf_iterator<char>());
     own = ft_strlen(content.c_str());
     ref = content.length();
     check.push_back(IS_EQUAL(own, ref));
     print_test_result(IS_EQUAL(own, ref));
     file.close();
-  }
-  else {
+  } else {
     std::cerr << RED << "Could not open file for testing\n" << RESET;
   }
 
@@ -77,7 +79,7 @@ void TestAsm::test_strlen()
   print_test_case(3, "String on the heap");
 #endif
 
-  std::string* ptr = new std::string("Classic Hello, World!");
+  std::string *ptr = new std::string("Classic Hello, World!");
 
   own = ft_strlen(ptr->c_str());
   ref = ptr->length();
@@ -109,8 +111,13 @@ void TestAsm::test_strlen()
   print_result(trues, check.size());
 }
 
-void TestAsm::test_strcpy()
-{
+/**
+ * Function for testing ft_strcpy.
+ *
+ * This function tests different cases for the ft_strcpy function
+ * written in x86 assembly.
+ */
+void TestAsm::test_strcpy() {
   print_test_header("FT_STRCPY");
   std::vector<bool> check;
 
@@ -118,9 +125,9 @@ void TestAsm::test_strcpy()
   print_test_case(1, "String literal in read-only memory");
 #endif
 
-  const char* test1_string = "Hello World!";
-  char* own = new char[std::strlen(test1_string) + 1]();
-  char* ref = new char[std::strlen(test1_string) + 1]();
+  const char *test1_string = "Hello World!";
+  char *own = new char[std::strlen(test1_string) + 1]();
+  char *ref = new char[std::strlen(test1_string) + 1]();
 
   ft_strcpy(own, test1_string);
   std::strcpy(ref, test1_string);
@@ -140,8 +147,8 @@ void TestAsm::test_strcpy()
   check.push_back(EQUAL_STR(own, ref));
   print_test_result(EQUAL_STR(own, ref));
 
-  delete [] own;
-  delete [] ref;
+  delete[] own;
+  delete[] ref;
 
 #ifdef __verbose__
   print_test_case(3, "String read from a file");
@@ -150,7 +157,8 @@ void TestAsm::test_strcpy()
   std::ifstream file("dummy_file.txt");
 
   if (file.is_open()) {
-    std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+    std::string content((std::istreambuf_iterator<char>(file)),
+                        std::istreambuf_iterator<char>());
     own = new char[std::strlen(content.c_str()) + 1]();
     ref = new char[std::strlen(content.c_str()) + 1]();
 
@@ -160,11 +168,10 @@ void TestAsm::test_strcpy()
     print_test_result(EQUAL_STR(own, ref));
     RESET_BUF(own);
     RESET_BUF(ref);
-    delete [] own;
-    delete [] ref;
+    delete[] own;
+    delete[] ref;
     file.close();
-  }
-  else {
+  } else {
     std::cerr << RED << "Could not open file for testing\n" << RESET;
   }
 
@@ -181,8 +188,8 @@ void TestAsm::test_strcpy()
   print_test_result(EQUAL_STR(own, ref));
   RESET_BUF(own);
   RESET_BUF(ref);
-  delete [] own;
-  delete [] ref;
+  delete[] own;
+  delete[] ref;
 
 #ifdef __verbose__
   print_test_case(5, "String on the heap");
@@ -190,7 +197,7 @@ void TestAsm::test_strcpy()
 
   const char copy_str[] = "This is a string on the heap";
 
-  char* copy = new char[std::strlen(copy_str) + 1]();
+  char *copy = new char[std::strlen(copy_str) + 1]();
   for (size_t i = 0; i < std::strlen(copy_str); ++i) {
     copy[i] = copy_str[i];
   }
@@ -203,17 +210,22 @@ void TestAsm::test_strcpy()
   print_test_result(EQUAL_STR(own, ref));
   RESET_BUF(own);
   RESET_BUF(ref);
-  delete [] own;
-  delete [] ref;
-  delete [] copy;
+  delete[] own;
+  delete[] ref;
+  delete[] copy;
 
   // Counting successful tests
   int trues = std::count(check.begin(), check.end(), true);
   print_result(trues, check.size());
 }
 
-void TestAsm::test_strcmp()
-{
+/**
+ * Function for testing ft_strcmp.
+ *
+ * This function tests different cases for the ft_strcmp function
+ * written in x86 assembly.
+ */
+void TestAsm::test_strcmp() {
   print_test_header("FT_STRCMP");
   std::vector<bool> check;
 
@@ -221,8 +233,8 @@ void TestAsm::test_strcmp()
   print_test_case(1, "Same string literal");
 #endif
 
-  const char* test1_string = "Hello World!";
-  const char* test2_string = "Hello World!";
+  const char *test1_string = "Hello World!";
+  const char *test2_string = "Hello World!";
   int own = 0;
   int ref = 0;
 
@@ -270,8 +282,9 @@ void TestAsm::test_strcmp()
   std::ifstream file("dummy_file.txt");
 
   if (file.is_open()) {
-    std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-    
+    std::string content((std::istreambuf_iterator<char>(file)),
+                        std::istreambuf_iterator<char>());
+
     std::string file1 = content.substr(0, 25);
     std::string file2 = content.substr(10, 22);
 
@@ -280,8 +293,7 @@ void TestAsm::test_strcmp()
     check.push_back(same_sign(own, ref));
     print_test_result(same_sign(own, ref));
     file.close();
-  }
-  else {
+  } else {
     std::cerr << RED << "Could not open file for testing\n" << RESET;
   }
 
@@ -300,7 +312,7 @@ void TestAsm::test_strcmp()
 
   const char copy_str[] = "This is a string on the heap";
 
-  char* copy = new char[std::strlen(copy_str) + 1]();
+  char *copy = new char[std::strlen(copy_str) + 1]();
   for (size_t i = 0; i < std::strlen(copy_str); ++i) {
     copy[i] = copy_str[i];
   }
@@ -309,66 +321,85 @@ void TestAsm::test_strcmp()
   ref = std::strcmp(copy_str, copy_str);
   check.push_back(is_equal(own, ref));
   print_test_result(is_equal(own, ref));
-  delete [] copy;
+  delete[] copy;
 
   // Counting successful tests
   int trues = std::count(check.begin(), check.end(), true);
   print_result(trues, check.size());
 }
 
-void TestAsm::print_setup()
-{
-  std::cout << BOLD << MAGENTA << "\n" << std::left << std::setw(40)
-            << "TESTNAME" << std::right << std::setw(4) << "COMP\n"
+/**
+ * Function for testing ft_write.
+ *
+ * This function tests different cases for the ft_write function
+ * written in x86 assembly.
+ */
+void TestAsm::test_write() {
+  print_test_header("FT_WRITE");
+  std::vector<bool> check;
+
+#ifdef __verbose__
+  print_test_case(1, "For testing");
+#endif
+
+  const ssize_t n = ft_write(-1, "hello\n", 6);
+  std::cout << "Return from ft_write: " << n << std::endl;
+
+  print_test_result(false);
+
+  // Counting successful tests
+  int trues = std::count(check.begin(), check.end(), true);
+  print_result(trues, check.size());
+}
+
+void TestAsm::print_setup() {
+  std::cout << BOLD << MAGENTA << "\n"
+            << std::left << std::setw(40) << "TESTNAME" << std::right
+            << std::setw(4) << "COMP\n"
             << RESET;
 }
 
 /**
  * @brief Small helper function to print which test
  * suite currently is being performed.
- * 
+ *
  * @param test String for being displayed.
  */
-inline void TestAsm::print_test_header(const std::string& test)
-{
+inline void TestAsm::print_test_header(const std::string &test) {
   std::cout << YELLOW << "\n" + test + "\n" << RESET;
 }
 
 /**
  * @brief Prints the current test being carried out.
- * 
+ *
  * @param nb Test within the test suite.
  * @param test Description of the test case.
  */
-inline void TestAsm::print_test_case(int nb, const std::string& test)
-{
+inline void TestAsm::print_test_case(int nb, const std::string &test) {
   std::string out = std::to_string(nb) + ". " + test;
   std::cout << std::left << std::setw(40) << out;
 }
 
 /**
  * @brief Print result from a single test.
- * 
+ *
  * @param result Bool given from the IS_EQUAL macro.
  */
-inline void TestAsm::print_test_result(bool result)
-{
+inline void TestAsm::print_test_result(bool result) {
   if (result) {
     std::cout << GREEN << "[OK]\n" << RESET;
-  }
-  else {
+  } else {
     std::cout << RED << "[KO]\n" << RESET;
   }
 }
 
 /**
  * @brief Prints how many test cases were successful.
- * 
+ *
  * @param trues How many trues are in the vector.
  * @param total Total number of tests carried out.
  */
-inline void TestAsm::print_result(int trues, int total)
-{
+inline void TestAsm::print_result(int trues, int total) {
   std::cout << GREEN << "RESULT: " << trues << "/" << total
             << " tests were successful." << RESET << std::endl;
 }

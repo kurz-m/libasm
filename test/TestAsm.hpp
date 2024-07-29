@@ -13,6 +13,7 @@ public:
   void test_strlen();
   void test_strcpy();
   void test_strcmp();
+  void test_write();
   static void print_setup();
 
 private:

@@ -16,11 +16,14 @@ global FT_WRITE
 
 FT_WRITE:
     xor rax, rax    ; reset the register to 0
-    move rax, SYS_WRITE ; load write function
+    mov rax, SYS_WRITE ; load write function
     syscall ; make syscall
 
+    test rax, rax
     js .handle_error    ; handle error if write returns -1
     ret ; return after successful writing
 
     .handle_error:
+        neg rax
+        mov rax, -1
         ret

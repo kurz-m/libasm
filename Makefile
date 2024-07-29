@@ -36,7 +36,7 @@ vpath %.s $(SRC_DIRS)
 ###############                      FILES                        ##############
 ################################################################################
 
-SRCS := ft_strlen.s ft_strcpy.s ft_strcmp.s
+SRCS := ft_strlen.s ft_strcpy.s ft_strcmp.s ft_write.s
 OBJS := $(addprefix $(BUILD_DIR)/, $(SRCS:%.s=%.o))
 INC := compiler_macros.inc os_syscalls.inc
 
@@ -71,7 +71,7 @@ $(LIB_DIR):
 
 $(BUILD_DIR)/%.o: %.s $(INC) | $(BUILD_DIR)
 	@$(LOG) "Compiling $(notdir $@)"
-	@$(AS) $(ASFLAGS) $< -o $@
+	$(AS) $(ASFLAGS) $< -o $@
 
 $(BUILD_DIR):
 	@mkdir -p $@
