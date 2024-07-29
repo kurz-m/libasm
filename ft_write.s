@@ -25,5 +25,4 @@ FT_WRITE:
 
     .handle_error:
         neg rax
-        mov rax, -1
         ret

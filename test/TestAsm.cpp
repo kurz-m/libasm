@@ -1,9 +1,11 @@
 #include <algorithm>
 #include <cstdlib>
 #include <cstring>
+#include <fcntl.h>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <unistd.h>
 
 #include "TestAsm.hpp"
 #include "colors.h"
@@ -328,6 +330,8 @@ void TestAsm::test_strcmp() {
   print_result(trues, check.size());
 }
 
+#include <signal.h>
+
 /**
  * Function for testing ft_write.
  *
@@ -335,17 +339,37 @@ void TestAsm::test_strcmp() {
  * written in x86 assembly.
  */
 void TestAsm::test_write() {
+  signal(SIGPIPE, SIG_IGN);
   print_test_header("FT_WRITE");
   std::vector<bool> check;
+  int own = 0;
+  int ref = 0;
 
 #ifdef __verbose__
-  print_test_case(1, "For testing");
+  print_test_case(1, "String literal");
 #endif
 
-  const ssize_t n = ft_write(-1, "hello\n", 6);
-  std::cout << "Return from ft_write: " << n << std::endl;
+  int fd = open("test_file.txt", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+  if (fd < 0) {
+  } else {
+    own = ft_write(fd, "hello\n", 6);
+    ref = 6;
+    check.push_back(is_equal(own, ref));
+    print_test_result(is_equal(own, ref));
+    std::remove("test_file.txt");
+  }
 
-  print_test_result(false);
+  std::cout << "EFAULT: " << ft_write(1, NULL, 10) << std::endl;
+  std::cout << "EBADF: " << ft_write(-1, "test\n", 5) << std::endl;
+  int ronly = open("test_errn.txt", O_RDONLY | O_CREAT | O_TRUNC, 0644);
+  std::cout << "UNKNOWN: " << ft_write(ronly, "test\n", 5) << std::endl;
+
+  int pipefd[2];
+  pipe(pipefd);
+  // std::cout << "first: " << pipefd[0] << " next: " << pipefd[1] << std::endl;
+  close(pipefd[0]);
+  std::cout << "EPIPE: " << ft_write(pipefd[1], "test\n", 5) << std::endl;
+
 
   // Counting successful tests
   int trues = std::count(check.begin(), check.end(), true);
