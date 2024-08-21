@@ -339,7 +339,9 @@ void TestAsm::test_strcmp() {
  * written in x86 assembly.
  */
 void TestAsm::test_write() {
+  // Ignore SIGPIPE error to be able to test pipe error
   signal(SIGPIPE, SIG_IGN);
+
   print_test_header("FT_WRITE");
   std::vector<bool> check;
   int own = 0;
