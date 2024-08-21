@@ -15,8 +15,6 @@ _start:
     ;;; Initialize registers ;;;
     ; Put count into rcx
     mov rcx, [count]
-    ; Use rdi as store for the final count caluclation
-    mov rdi, [count]
 
     ;;; Check pre-conditions ;;;
     ; If no numbers, stop
